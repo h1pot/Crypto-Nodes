@@ -29,7 +29,7 @@ crypto-nodes/
 ## Setup Instructions
 
 ### 1. Prepare Files
-Ensure all necessary files (`Dockerfile`, config files, `check_balances.sh`) are in your project directory, e.g., `F:\Dropbox\@Wady\2025\crypto-nodes`.
+Ensure all necessary files (`Dockerfile`, config files, `check_balances.sh`) are in your project directory, e.g., `/home/user/crypto-nodes`.
 
 ### 2. Build Docker Image
 ```bash
@@ -161,7 +161,7 @@ This project is for educational purposes. Use at your own risk.
 
 ## Final Verification
 To ensure everything works with the README:
-1. Confirm all files are in `F:\Dropbox\@Wady\2025\crypto-nodes`:
+1. Confirm all files are in `/home/user/crypto-nodes`:
    - `Dockerfile`
    - `bitcoin.conf`
    - `dogecoin.conf`
@@ -171,7 +171,7 @@ To ensure everything works with the README:
    - `README.md`
 2. Follow the README’s setup steps:
    ```bash
-   cd F:\Dropbox\@Wady\2025\crypto-nodes
+   cd /home/user/crypto-nodes
    docker build -t crypto-nodes .
    docker rm -f crypto-nodes
    docker run -d -p 18444:18444 -p 22556:22556 -p 19335:19335 -p 8545:8545 --name crypto-nodes crypto-nodes
