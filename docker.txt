@@ -1,0 +1,8 @@
+
+docker build -t crypto-nodes .
+
+docker run -d -p 18444:18444 -p 22556:22556 -p 19335:19335 -p 8545:8545 --name crypto-nodes crypto-nodes:working
+
+docker exec -it crypto-nodes bash
+
+ps aux | grep -E 'bitcoind|dogecoind|litecoind|geth'
