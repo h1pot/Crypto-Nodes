@@ -49,22 +49,58 @@ Start the container, mapping RPC ports:
 docker run -d -p 18444:18444 -p 22556:22556 -p 19335:19335 -p 8545:8545 --name crypto-nodes crypto-nodes
 
 ### 4. Access the Container
-
+Enter the container’s shell:
+docker exec -it crypto-nodes bash
 
 ### 5. Verify Nodes
+Check running processes:
+ps aux | grep -E 'bitcoind|dogecoind|litecoind|geth'
 
+Expected output includes bitcoind, dogecoind, litecoind, and geth.
+
+Test node connectivity:
+bitcoin-cli -regtest -rpcport=18444 getblockchaininfo
+dogecoin-cli -regtest -rpcport=22556 getblockchaininfo
+litecoin-cli -regtest -rpcport=19335 getblockchaininfo
+geth --exec 'eth.blockNumber' attach http://localhost:8545
 
 ### 6. Create Wallets
+Create wallets for testing:
+bitcoin-cli -regtest -rpcport=18444 createwallet "testwallet"
+dogecoin-cli -regtest -rpcport=22556 getnewaddress
+litecoin-cli -regtest -rpcport=19335 createwallet "testwallet"
+geth --datadir /root/.ethereum account new
 
+## Dogecoin uses the default wallet (wallet.dat) since v1.14.8 doesn’t support createwallet.
+## Save the Ethereum account password securely.
 
 ### 7. Generate Test Funds
-
+Mine blocks to fund wallets (regtest requires 100 blocks for coinbase maturity):
+bitcoin-cli -regtest -rpcport=18444 generatetoaddress 101 $(bitcoin-cli -regtest -rpcport=18444 getnewaddress)
+dogecoin-cli -regtest -rpcport=22556 generatetoaddress 101 $(dogecoin-cli -regtest -rpcport=22556 getnewaddress)
+litecoin-cli -regtest -rpcport=19335 generatetoaddress 101 $(litecoin-cli -regtest -rpcport=19335 getnewaddress)
+Ethereum’s dev mode pre-funds accounts (no mining needed).
 
 ### 8. Check Balances
+Run the balance checker:
+bash /usr/local/bin/check_balances.sh
 
+Expected output:
+Checking Bitcoin balance...
+50.00000000
+Checking Dogecoin balance...
+50.00000000
+Checking Litecoin balance...
+50.00000000
+Checking Ethereum balance...
+Balance for 0x...: 115792089237316195423570985008687907853269984665564039457584007913129639927 ETH
 
 ### 9. Save the Setup
+Commit the container to preserve wallets and funds:
+docker commit crypto-nodes crypto-nodes:working
 
+Restart later:
+docker run -d -p 18444:18444 -p 22556:22556 -p 19335:19335 -p 8545:8545 --name crypto-nodes crypto-nodes:working
 
 ### Persistence
 Regtest data is ephemeral unless persisted. To keep wallets:
@@ -82,15 +118,22 @@ docker cp crypto-nodes:/root/.ethereum/keystore ./ethereum_keystore
 ### Troubleshooting
 
 ## Port Conflicts: Check ports:
-
+netstat -tuln | grep -E '18444|22556|19335|8545|44555'
+Update dogecoin.conf (e.g., rpcport=22557) if needed.
 
 ## Node Not Running: Check logs:
-
+cat /root/.bitcoin/regtest/debug.log
+cat /root/.dogecoin/regtest/debug.log
+cat /root/.litecoin/regtest/debug.log
+cat /root/.ethereum/geth.log
 
 ## Balance Issues: Verify block count:
-
+bitcoin-cli -regtest -rpcport=18444 getblockcount
+dogecoin-cli -regtest -rpcport=22556 getblockcount
+litecoin-cli -regtest -rpcport=19335 getblockcount
 
 ## Ethereum Balance Display: If scientific notation persists:
+geth --exec "web3.fromWei(eth.getBalance('0x...'), 'ether').toFixed(0)" attach http://localhost:8545
 
 ### License
 
