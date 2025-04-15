@@ -1,8 +1,33 @@
+docker stop crypto-nodes
+docker rm crypto-nodes
 
 docker build -t crypto-nodes .
 
-docker run -d -p 18444:18444 -p 22556:22556 -p 19335:19335 -p 8545:8545 --name crypto-nodes crypto-nodes:working
+docker run -d -p 18444:18444 -p 22556:22556 -p 19335:19335 -p 8545:8545 --name crypto-nodes crypto-nodes
+
+#docker run -d -p 18444:18444 -p 22556:22556 -p 19335:19335 -p 8545:8545 --name crypto-nodes crypto-nodes:working
 
 docker exec -it crypto-nodes bash
 
 ps aux | grep -E 'bitcoind|dogecoind|litecoind|geth'
+
+
+
+
+Recreate Wallets and Funds:
+
+    Create wallets (Dogecoin uses default wallet):
+    bash
+
+bitcoin-cli -regtest -rpcport=18444 createwallet "testwallet"
+dogecoin-cli -regtest -rpcport=22556 getnewaddress
+litecoin-cli -regtest -rpcport=19335 createwallet "testwallet"
+geth --datadir /root/.ethereum account new
+
+Save the Ethereum account password securely.
+Generate funds:
+bash
+bitcoin-cli -regtest -rpcport=18444 generatetoaddress 101 $(bitcoin-cli -regtest -rpcport=18444 getnewaddress)
+dogecoin-cli -regtest -rpcport=22556 generatetoaddress 101 $(dogecoin-cli -regtest -rpcport=22556 getnewaddress)
+litecoin-cli -regtest -rpcport=19335 generatetoaddress 101 $(litecoin-cli -regtest -rpcport=19335 getnewaddress)
+
