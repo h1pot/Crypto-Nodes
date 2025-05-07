@@ -63,5 +63,6 @@ CMD ["bash", "-c", "\
     sleep 5 && \
     litecoind -regtest -daemon -debuglogfile=/root/.litecoin/regtest/debug.log & \
     sleep 5 && \
-    geth --datadir /root/.ethereum --http --http.api eth,web3,net,personal --dev --log.file /root/.ethereum/geth.log & \
+    geth --datadir /root/.ethereum --http --http.addr 0.0.0.0 --http.api eth,web3,net,personal --dev --log.file /root/.ethereum/geth.log & \
     tail -f /dev/null"]
+    
