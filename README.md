@@ -180,3 +180,5 @@ To ensure everything works with the README:
 Run through steps 5–8 (verify nodes, create wallets, generate funds, check balances).
 Share the output of:
  check_balances.sh
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/h1pot)
